@@ -1,0 +1,25 @@
+.cat-blocker-overlay {
+  position: fixed;
+  z-index: 2147483647;
+  pointer-events: none;
+  width: 80px;
+  height: 80px;
+  opacity: 0;
+  transition: opacity 0ms;
+}
+
+.cat-blocker-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.cat-blocker-overlay.visible {
+  opacity: 1;
+  transition: opacity 200ms;
+}
+
+.cat-blocker-overlay.hiding {
+  opacity: 0;
+  transition: opacity 1500ms;
+}
