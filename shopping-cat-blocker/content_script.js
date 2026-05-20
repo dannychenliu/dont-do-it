@@ -38,6 +38,7 @@
     img.draggable = false;
     overlay.appendChild(img);
 
+    if (!document.body) return null;
     document.body.appendChild(overlay);
     return overlay;
   }
@@ -62,6 +63,7 @@
 
     const gifUrl = pickRandomGif();
     currentOverlay = createOverlay(gifUrl);
+    if (!currentOverlay) return;
     positionOverlay(currentOverlay, clientX, clientY);
 
     // Trigger fade-in: force reflow then add visible class
@@ -115,6 +117,7 @@
   // --- Event handlers ---
   function onMouseEnter(e) {
     showOverlay(e.clientX, e.clientY);
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
   }
 
   function onMouseMove(e) {
@@ -132,22 +135,22 @@
     for (const btn of buttons) {
       if (btn.dataset.catBlockerAttached) continue;
       btn.dataset.catBlockerAttached = 'true';
-      btn.addEventListener('mouseenter', (e) => {
-        onMouseEnter(e);
-        btn.addEventListener('mousemove', onMouseMove);
-      });
-      btn.addEventListener('mouseleave', () => {
-        onMouseLeave();
-      });
+      btn.addEventListener('mouseenter', onMouseEnter);
+      btn.addEventListener('mouseleave', onMouseLeave);
     }
   }
 
   // --- Init ---
+  let scanTimeout = null;
   const observer = new MutationObserver(() => {
-    const buttons = findPurchaseButtons();
-    if (buttons.length > 0) {
-      attachHoverListeners(buttons);
-    }
+    if (scanTimeout) return;
+    scanTimeout = setTimeout(() => {
+      scanTimeout = null;
+      const buttons = findPurchaseButtons();
+      if (buttons.length > 0) {
+        attachHoverListeners(buttons);
+      }
+    }, 200);
   });
 
   const initialButtons = findPurchaseButtons();
@@ -157,7 +160,15 @@
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
-  window.addEventListener('beforeunload', () => {
+  function cleanup() {
+    if (scanTimeout) {
+      clearTimeout(scanTimeout);
+      scanTimeout = null;
+    }
     observer.disconnect();
-  });
+  }
+
+  window.addEventListener('beforeunload', cleanup);
+  // Handle SPA navigations
+  window.addEventListener('popstate', cleanup);
 })();
