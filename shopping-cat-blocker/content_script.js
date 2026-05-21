@@ -1,24 +1,24 @@
 (function () {
   'use strict';
 
-  const TARGET_TEXTS = ['加入購物車', '立即購買', '購物車', '直接購買', '直接買', '加到購物車', '結帳'];
+  // const TARGET_TEXTS = ['加入購物車', '立即購買', '購物車', '直接購買', '直接買', '加到購物車', '結帳'];
   // ============================================================
   // 方法一：通用文字關鍵字（電商共通常用詞）
   // 只要按鈕文字包含以下任一詞，就會被偵測
   // ============================================================
-  // const TARGET_TEXTS = [
-  //   // 台灣電商
-  //   '加入購物車', '立即購買', '購物車', '加入購物',
-  //   '直接購買', '直接買', '加到購物車', '結帳',
-  //   '放入購物車', '加入購物袋', '加入購物籃', '放進購物車',
-  //   '馬上買', '加入詢價',
-  //   // 英文站
-  //   'ADD TO CART', 'BUY NOW', 'ADD TO BAG', 'CHECKOUT',
-  //   'add to cart', 'buy now', 'add to bag',
-  //   // 日韓站
-  //   'カートに入れる', '購入する', '今すぐ購入',
-  //   '장바구니', '바로구매', '구매하기'
-  // ];
+  const TARGET_TEXTS = [
+    // 台灣電商
+    '加入購物車', '立即購買', '購物車', '加入購物',
+    '直接購買', '直接買', '加到購物車', '結帳',
+    '放入購物車', '加入購物袋', '加入購物籃', '放進購物車',
+    '馬上買', '加入詢價',
+    // 英文站
+    'ADD TO CART', 'BUY NOW', 'ADD TO BAG', 'CHECKOUT',
+    'add to cart', 'buy now', 'add to bag',
+    // 日韓站
+    'カートに入れる', '購入する', '今すぐ購入',
+    '장바구니', '바로구매', '구매하기'
+  ];
 
 
   // ============================================================
@@ -26,50 +26,50 @@
   // 在下面的 SITE_BUTTONS 表格中自行加/減站點
   // 啟用後會優先於通用規則
   // ============================================================
-  const SITE_BUTTONS = {};
+
   // 範例：取消下方註解即可啟用各站專屬規則
-  // const SITE_BUTTONS = {
-  //   'momoshop.com.tw': {
-  //     texts: ['購物車', '結帳', '立即購買'],
-  //     selectors: ['button', '[class*="addCart"]', '[class*="fastBuy"]']
-  //   },
-  //   'ruten.com.tw': {
-  //     texts: ['加入購物車', '直接購買', '出價', '馬上買'],
-  //     selectors: ['button', '[class*="qa-add-cart"]', '[class*="buy"]']
-  //   },
-  //   'shopee.tw': {
-  //     texts: ['加入購物車', '立即購買'],
-  //     selectors: ['button', 'a', '[class*="btn-solid"]']
-  //   },
-  //   '24h.pchome.com.tw': {
-  //     texts: ['加入購物車', '立即購買', '直接買'],
-  //     selectors: ['button', 'a', '[id*="BuyBtn"]', '[class*="buyBtn"]']
-  //   },
-  //   'books.com.tw': {
-  //     texts: ['加入購物車', '立即購買', '放入購物車'],
-  //     selectors: ['button', '[class*="buy"]', '[class*="add"]']
-  //   },
-  //   'etmall.com.tw': {
-  //     texts: ['加入購物車', '立即購買', '購物車'],
-  //     selectors: ['button', '[class*="cart"]']
-  //   },
-  //   'rakuten.com.tw': {
-  //     texts: ['加入購物車', '立即購買', 'カートに入れる'],
-  //     selectors: ['button', '[class*="cart"]']
-  //   },
-  //   'amazon.com': {
-  //     texts: ['Add to Cart', 'Buy Now', 'add to cart'],
-  //     selectors: ['[type="submit"]', '[name*="submit"]', '#add-to-cart-button']
-  //   },
-  //   'amazon.co.jp': {
-  //     texts: ['カートに入れる', '今すぐ購入'],
-  //     selectors: ['[type="submit"]', '#add-to-cart-button']
-  //   },
-  //   'gmarket.co.kr': {
-  //     texts: ['장바구니', '바로구매', '구매하기'],
-  //     selectors: ['button', '[class*="cart"]', '[class*="buy"]']
-  //   }
-  // };
+  const SITE_BUTTONS = {
+    'momoshop.com.tw': {
+      texts: ['放入購物車', '直接購買'],
+      selectors: ['button']
+    },
+    'ruten.com.tw': {
+      texts: ['加入購物車', '直接購買', '出價', '馬上買'],
+      selectors: ['button', '[class*="qa-add-cart"]', '[class*="buy"]']
+    },
+    'shopee.tw': {
+      texts: ['加入購物車', '立即購買'],
+      selectors: ['button', 'a', '[class*="btn-solid"]']
+    },
+    '24h.pchome.com.tw': {
+      texts: ['加入購物車', '立即購買', '直接買'],
+      selectors: ['button', 'a', '[id*="BuyBtn"]', '[class*="buyBtn"]']
+    },
+    'books.com.tw': {
+      texts: ['加入購物車', '立即購買', '放入購物車'],
+      selectors: ['button', '[class*="buy"]', '[class*="add"]']
+    },
+    'etmall.com.tw': {
+      texts: ['加入購物車', '立即購買', '購物車'],
+      selectors: ['button', '[class*="cart"]']
+    },
+    'rakuten.com.tw': {
+      texts: ['加入購物車', '立即購買', 'カートに入れる'],
+      selectors: ['button', '[class*="cart"]']
+    },
+    'amazon.com': {
+      texts: ['Add to Cart', 'Buy Now', 'add to cart'],
+      selectors: ['[type="submit"]', '[name*="submit"]', '#add-to-cart-button']
+    },
+    'amazon.co.jp': {
+      texts: ['カートに入れる', '今すぐ購入'],
+      selectors: ['[type="submit"]', '#add-to-cart-button']
+    },
+    'gmarket.co.kr': {
+      texts: ['장바구니', '바로구매', '구매하기'],
+      selectors: ['button', '[class*="cart"]', '[class*="buy"]']
+    }
+  };
 
   // GIF 檔案列表：新增或刪除 GIF 時，在這陣列加/減一筆就好
   const GIF_FILES = [
@@ -80,7 +80,7 @@
   const OVERLAY_WIDTH = 120;
   const OVERLAY_HEIGHT = 120;
   const OFFSET_X = 15;
-  const OFFSET_Y = -80;
+  const OFFSET_Y = -120;
   const FADE_OUT_MS = 1500;
 
   let currentOverlay = null;
