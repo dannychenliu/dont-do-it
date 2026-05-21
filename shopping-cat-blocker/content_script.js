@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const TARGET_TEXTS = ['加入購物車', '立即購買'];
+  const TARGET_TEXTS = ['加入購物車', '立即購買', '購物車', '直接購買', '直接買', '加到購物車', '結帳'];
   const GIF_COUNT = 8;
   const OVERLAY_WIDTH = 80;
   const OVERLAY_HEIGHT = 80;
@@ -89,14 +89,23 @@
   // --- Button detection ---
   function isPurchaseButton(el) {
     const text = el.textContent.trim();
-    return TARGET_TEXTS.some(t => text.includes(t));
+    if (!text) return false;
+    // Exclude header cart count indicators like "購物車 (0)"
+    if (/^購物車\s*\(/.test(text)) return false;
+    return TARGET_TEXTS.some(t => text.includes(t)) && text.length <= 20;
+  }
+
+  function isVisible(el) {
+    if (el.offsetParent !== null) return true;
+    // Fixed-position elements may have null offsetParent but still be visible
+    const rect = el.getBoundingClientRect();
+    return rect.width > 0 && rect.height > 0;
   }
 
   function findPurchaseButtons() {
     const selectors = [
       'button', 'a', '[role="button"]', 'input[type="submit"]',
-      '.btn', '[class*="buy"]', '[class*="cart"]', '[class*="purchase"]',
-      'div', 'span', 'label'
+      '.btn', '[class*="buy"]', '[class*="cart"]', '[class*="purchase"]'
     ];
     const results = [];
     const seen = new Set();
@@ -106,7 +115,7 @@
       for (const el of elements) {
         if (seen.has(el)) continue;
         seen.add(el);
-        if (isPurchaseButton(el) && el.offsetParent !== null) {
+        if (isPurchaseButton(el) && isVisible(el)) {
           results.push(el);
         }
       }
@@ -150,7 +159,7 @@
       if (buttons.length > 0) {
         attachHoverListeners(buttons);
       }
-    }, 200);
+    }, 400);
   });
 
   const initialButtons = findPurchaseButtons();
