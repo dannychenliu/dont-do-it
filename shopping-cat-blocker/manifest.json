@@ -11,12 +11,110 @@
   "content_scripts": [
     {
       "matches": [
+        // ----- 台灣電商 -----
         "*://*.shopee.tw/*",
         "*://24h.pchome.com.tw/*",
         "*://*.momoshop.com.tw/*",
         "*://*.ruten.com.tw/*",
+        "*://*.books.com.tw/*",
+        "*://*.etmall.com.tw/*",
+        "*://*.rakuten.com.tw/*",
+        "*://*.shop.pxmart.com.tw/*",
+        "*://*.nike.com.tw/*",
+        "*://*.pxgo.com.tw/*",
+        "*://*.shop.pxgo.com.tw/*",
+        "*://*.tw.buy.yahoo.com/*",
+        "*://*.tw.bid.yahoo.com/*",
+        "*://*.carousell.com.tw/*",
+        "*://*.tw.carousell.com/*",
+        "*://*.shop.muji.tw/*",
+        "*://*.uniqlo.com/*",
+        "*://*.coupang.tw/*",
+        "*://*.world.taobao.com/*",
+
+        // ----- 美國電商 -----
+        "*://*.walmart.com/*",
+        "*://*.target.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.costco.com/*",
+        "*://*.macys.com/*",
+        "*://*.nordstrom.com/*",
+        "*://*.newegg.com/*",
+        "*://*.ebay.com/*",
+        "*://*.etsy.com/*",
+        "*://*.mercari.com/*",
+        "*://*.offerup.com/*",
+        "*://*.craigslist.org/*",
+        "*://*.temu.com/*",
+        "*://*.shein.com/*",
+        "*://*.shein.tw/*",
+        "*://*.aliexpress.com/*",
+        "*://*.shop.tiktok.com/*",
+        "*://*.nike.com/*",
+        "*://*.apple.com/*",
+        "*://*.sephora.com/*",
+        "*://*.chewy.com/*",
+        "*://*.wayfair.com/*",
+
+        // ----- Amazon（多語言）-----
         "*://*.amazon.com/*",
-        "*://*.amazon.co.jp/*"
+        "*://*.amazon.co.jp/*",
+        "*://*.amazon.de/*",
+        "*://*.amazon.fr/*",
+        "*://*.amazon.it/*",
+        "*://*.amazon.es/*",
+        "*://*.amazon.nl/*",
+
+        // ----- eBay Europe -----
+        "*://*.ebay.co.uk/*",
+        "*://*.ebay.de/*",
+        "*://*.ebay.fr/*",
+
+        // ----- 德國 / 歐洲 -----
+        "*://*.otto.de/*",
+        "*://*.zalando.com/*",
+        "*://*.zalando.de/*",
+        "*://*.mediamarkt.de/*",
+        "*://*.saturn.de/*",
+
+        // ----- 法國 -----
+        "*://*.cdiscount.com/*",
+        "*://*.fnac.com/*",
+        "*://*.carrefour.fr/*",
+
+        // ----- 荷蘭 -----
+        "*://*.bol.com/*",
+        "*://*.coolblue.nl/*",
+
+        // ----- 西班牙 -----
+        "*://*.elcorteingles.es/*",
+        "*://*.pccomponentes.com/*",
+
+        // ----- 波蘭 / 東歐 -----
+        "*://*.allegro.pl/*",
+        "*://*.emag.ro/*",
+
+        // ----- 英國 -----
+        "*://*.asos.com/*",
+        "*://*.argos.co.uk/*",
+        "*://*.johnlewis.com/*",
+        "*://*.currys.co.uk/*",
+
+        // ----- 日本 -----
+        "*://*.rakuten.co.jp/*",
+        "*://*.shopping.yahoo.co.jp/*",
+        "*://*.yodobashi.com/*",
+        "*://*.biccamera.com/*",
+        "*://*.omni7.jp/*",
+        "*://*.aeon.com/*",
+        "*://*.zozo.jp/*",
+        "*://zozo.jp/*",
+        "*://*.muji.com/*",
+        "*://*.nissen.co.jp/*",
+        "*://*.lohaco.yahoo.co.jp/*",
+
+        // ----- 韓國 -----
+        "*://*.gmarket.co.kr/*"
       ],
       "js": ["content_script.js"],
       "css": ["styles.css"],
