@@ -783,7 +783,11 @@
       idx = Math.floor(Math.random() * GIF_COUNT);
     } while (idx === lastGifIndex && GIF_COUNT > 1);
     lastGifIndex = idx;
-    return chrome.runtime.getURL(`gifs/${GIF_FILES[idx]}`);
+    try {
+      return chrome.runtime.getURL(`gifs/${GIF_FILES[idx]}`);
+    } catch (e) {
+      return `gifs/${GIF_FILES[idx]}`;
+    }
   }
 
   // --- Overlay management ---
