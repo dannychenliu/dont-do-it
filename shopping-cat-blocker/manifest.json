@@ -14,7 +14,9 @@
         "*://*.shopee.tw/*",
         "*://24h.pchome.com.tw/*",
         "*://*.momoshop.com.tw/*",
-        "*://*.ruten.com.tw/*"
+        "*://*.ruten.com.tw/*",
+        "*://*.amazon.com/*",
+        "*://*.amazon.co.jp/*"
       ],
       "js": ["content_script.js"],
       "css": ["styles.css"],

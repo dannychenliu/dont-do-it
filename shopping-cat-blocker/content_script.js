@@ -49,7 +49,7 @@
   const SITE_BUTTONS = {
     "momoshop.com.tw": {
       texts: ["放入購物車", "直接購買"],
-      selectors: ["button", "a", '[id*="buy_yes"]', '[id*="in_car"]'],
+      selectors: ["#buy_yes a", "#inCar a", ".checkoutArea a"],
     },
     "ruten.com.tw": {
       texts: ["加入購物車", "直接購買", "出價", "馬上買"],
@@ -62,8 +62,13 @@
       ],
     },
     "shopee.tw": {
-      texts: ["加入購物車", "立即購買"],
-      selectors: ["button", "a", '[class*="btn-solid"]'],
+      texts: ["加入購物車", "直接購買", "立即購買"],
+      selectors: [
+        "button",
+        "a",
+        ".btn-solid-primary button",
+        '[class*="btn-tinted"]',
+      ],
     },
     "24h.pchome.com.tw": {
       texts: ["加入購物車", "立即購買", "直接買"],
@@ -82,12 +87,24 @@
       selectors: ["button", '[class*="cart"]'],
     },
     "amazon.com": {
-      texts: ["Add to Cart", "Buy Now", "add to cart"],
-      selectors: ['[type="submit"]', '[name*="submit"]', "#add-to-cart-button"],
+      texts: ["Add to Cart", "Buy Now", "add to cart", "buy now", "加入購物車", "立即購買", "新增至購物車", "增加到購物車"],
+      selectors: [
+        "#add-to-cart-button",
+        "#buy-now-button",
+        "input[name='submit.addToCart']",
+        "input[name='submit.buyNow']",
+        '[data-asin] input[type="submit"]',
+      ],
     },
     "amazon.co.jp": {
-      texts: ["カートに入れる", "今すぐ購入"],
-      selectors: ['[type="submit"]', "#add-to-cart-button"],
+      texts: ["カートに入れる", "今すぐ購入", "新增至購物車", "增加到購物車"],
+      selectors: [
+        "#add-to-cart-button",
+        "#buy-now-button",
+        "input[name='submit.addToCart']",
+        "input[name='submit.buyNow']",
+        '[data-asin] input[type="submit"]',
+      ],
     },
     "gmarket.co.kr": {
       texts: ["장바구니", "바로구매", "구매하기"],
@@ -98,8 +115,8 @@
   // GIF 檔案列表：新增或刪除 GIF 時，在這陣列加/減一筆就好
   const GIF_FILES = Array.from({ length: 28 }, (_, i) => `${i + 1}.gif`);
   const GIF_COUNT = GIF_FILES.length;
-  const OVERLAY_WIDTH = 120;
-  const OVERLAY_HEIGHT = 120;
+  const OVERLAY_WIDTH = 150;
+  const OVERLAY_HEIGHT = 150;
   const OFFSET_X = 15;
   const OFFSET_Y = -120;
   const FADE_OUT_MS = 1500;
@@ -194,9 +211,35 @@
   function isPurchaseButton(el, siteTexts) {
     const texts = siteTexts || TARGET_TEXTS;
     const text = el.textContent.trim();
-    if (!text) return false;
     if (/^購物車\s*\(/.test(text)) return false;
-    return texts.some((t) => text.includes(t)) && text.length <= 20;
+    // 檢查 textContent、alt、title、value、aria-label 等屬性
+    const alt = el.getAttribute("alt") || "";
+    const title = el.getAttribute("title") || "";
+    const val = el.getAttribute("value") || "";
+    const ariaLabel = el.getAttribute("aria-label") || "";
+    // 也檢查子元素的 alt/title（圖示按鈕常見）
+    let childAlt = "",
+      childTitle = "";
+    const img = el.querySelector("img");
+    if (img) {
+      childAlt = img.getAttribute("alt") || "";
+      childTitle = img.getAttribute("title") || "";
+    }
+    const combined =
+      text +
+      " " +
+      alt +
+      " " +
+      title +
+      " " +
+      val +
+      " " +
+      ariaLabel +
+      " " +
+      childAlt +
+      " " +
+      childTitle;
+    return texts.some((t) => combined.includes(t)) && combined.length <= 120;
   }
 
   function isVisible(el) {
@@ -219,6 +262,14 @@
     // 如果有專屬規則，只用該規則掃描；沒有則走通用規則
     // ============================================================
     const siteConfig = getSiteConfig();
+
+    // 偵錯：紀錄 host 與 config
+    console.log(
+      "[購物衝動抑制器] host:",
+      window.location.hostname,
+      "config:",
+      siteConfig,
+    );
 
     const selectors = siteConfig
       ? siteConfig.selectors
@@ -254,10 +305,24 @@
 
     for (const sel of selectors) {
       const elements = document.querySelectorAll(sel);
+      console.log(
+        `[購物衝動抑制器] selector "${sel}" found ${elements.length} elements`,
+      );
       for (const el of elements) {
         if (seen.has(el)) continue;
         seen.add(el);
-        if (isPurchaseButton(el, texts) && isVisible(el)) {
+        const purchase = isPurchaseButton(el, texts);
+        const visible = isVisible(el);
+        console.log(
+          `[購物衝動抑制器] el:`,
+          el.tagName,
+          el.id || el.className || "(no id)",
+          `textContent:"${el.textContent.trim()}"`,
+          `purchase:${purchase}`,
+          `visible:${visible}`,
+        );
+        if (purchase && visible) {
+          console.log(`[購物衝動抑制器] MATCH!`, el);
           results.push(el);
         }
       }
@@ -293,6 +358,7 @@
 
   // --- Init ---
   let scanTimeout = null;
+  let periodicScanTimer = null;
   const observer = new MutationObserver(() => {
     if (scanTimeout) return;
     scanTimeout = setTimeout(() => {
@@ -311,10 +377,30 @@
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
+  // SPA 安全網：前 30 秒每 2 秒重新掃描一次
+  // 因 Shopee/電商網站商品頁按鈕可能透過非同步 React 渲染
+  let periodicCount = 0;
+  periodicScanTimer = setInterval(() => {
+    periodicCount++;
+    if (periodicCount > 15) {
+      clearInterval(periodicScanTimer);
+      periodicScanTimer = null;
+      return;
+    }
+    const buttons = findPurchaseButtons();
+    if (buttons.length > 0) {
+      attachHoverListeners(buttons);
+    }
+  }, 2000);
+
   function cleanup() {
     if (scanTimeout) {
       clearTimeout(scanTimeout);
       scanTimeout = null;
+    }
+    if (periodicScanTimer) {
+      clearInterval(periodicScanTimer);
+      periodicScanTimer = null;
     }
     observer.disconnect();
   }
