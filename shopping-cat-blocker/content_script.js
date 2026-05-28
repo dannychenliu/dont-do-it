@@ -776,18 +776,46 @@
   let rotateTimeout = null;
   let lastGifIndex = -1;
 
+  // 只從已載入完成的 GIF 中選取，避免切換時出現空白
+  const readyGifIndices = [];
+  const gifCache = [];
+
+  function preloadAllGifs() {
+    for (let i = 0; i < GIF_COUNT; i++) {
+      const url = (() => {
+        try {
+          return chrome.runtime.getURL(`gifs/${GIF_FILES[i]}`);
+        } catch (e) {
+          return `gifs/${GIF_FILES[i]}`;
+        }
+      })();
+      gifCache[i] = url;
+      const img = new Image();
+      img.onload = () => {
+        readyGifIndices.push(i);
+      };
+      img.onerror = () => {
+        // 載入失敗時仍加入 pool，讓 pickRandomGif 有 fallback
+        readyGifIndices.push(i);
+      };
+      img.src = url;
+    }
+  }
+  preloadAllGifs();
+
   // --- GIF selection ---
   function pickRandomGif() {
+    const pool = readyGifIndices.length > 0 ? readyGifIndices : Array.from({ length: GIF_COUNT }, (_, i) => i);
+    if (pool.length <= 1) {
+      lastGifIndex = pool[0];
+      return gifCache[pool[0]];
+    }
     let idx;
     do {
-      idx = Math.floor(Math.random() * GIF_COUNT);
-    } while (idx === lastGifIndex && GIF_COUNT > 1);
+      idx = pool[Math.floor(Math.random() * pool.length)];
+    } while (idx === lastGifIndex);
     lastGifIndex = idx;
-    try {
-      return chrome.runtime.getURL(`gifs/${GIF_FILES[idx]}`);
-    } catch (e) {
-      return `gifs/${GIF_FILES[idx]}`;
-    }
+    return gifCache[idx];
   }
 
   // --- Overlay management ---
@@ -961,7 +989,10 @@
   }
 
   // --- Event handlers ---
+  let activeOverlayElement = null;
+
   function onMouseEnter(e) {
+    activeOverlayElement = e.currentTarget;
     showOverlay(e.clientX, e.clientY);
     document.addEventListener("mousemove", onMouseMove, { passive: true });
   }
@@ -972,7 +1003,9 @@
     }
   }
 
-  function onMouseLeave() {
+  function onMouseLeave(e) {
+    if (e.currentTarget !== activeOverlayElement) return;
+    activeOverlayElement = null;
     document.removeEventListener("mousemove", onMouseMove);
     hideOverlay();
   }
