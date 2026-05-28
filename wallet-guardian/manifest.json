@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "購物衝動抑制器",
+  "name": "Wallet Guardian",
   "version": "1.0.0",
-  "description": "在看電商網站時，降低你的購物衝動",
+  "description": "Let angry animal memes help/ judge you from buying things online.🐱 🐶!",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
