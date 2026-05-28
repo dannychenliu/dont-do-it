@@ -939,13 +939,6 @@
   function findPurchaseButtons() {
     const siteConfig = getSiteConfig();
 
-    console.log(
-      "[購物衝動抑制器] host:",
-      window.location.hostname,
-      "config:",
-      siteConfig,
-    );
-
     const selectors = siteConfig ? siteConfig.selectors : BASE_SELECTORS;
 
     const texts = siteConfig ? siteConfig.texts : null;
@@ -960,11 +953,6 @@
         const purchase = isPurchaseButton(el, texts);
         const visible = isVisible(el);
         if (purchase && visible) {
-          console.log(
-            `[購物衝動抑制器] MATCH!`,
-            el.tagName,
-            el.id || el.className || "(no id)",
-          );
           results.push(el);
         }
       }
@@ -1046,6 +1034,6 @@
     observer.disconnect();
   }
 
-  window.addEventListener("beforeunload", cleanup);
+  window.addEventListener("pagehide", cleanup);
   window.addEventListener("popstate", cleanup);
 })();
