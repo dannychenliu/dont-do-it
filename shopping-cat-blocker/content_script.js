@@ -177,6 +177,7 @@
     "Add",
     "Buy",
     "Add to Cart",
+    "Add to cart",
     "Buy Now",
     "Add to Bag",
     "Add To Bag",
@@ -204,6 +205,7 @@
   ];
   const JP_TEXTS = [
     "カートに入れる",
+    "今すぐ買う",
     "購入する",
     "今すぐ購入",
     "カートを見る",
@@ -229,6 +231,7 @@
   ];
   const DE_TEXTS = [
     "In den Warenkorb",
+    "Add to bag",
     "Jetzt kaufen",
     "Zum Warenkorb",
     "Kaufen",
@@ -272,9 +275,11 @@
   ];
   const IT_TEXTS = [
     "Aggiungi al carrello",
+    "Buy now",
     "Acquista",
     "Acquista ora",
     "Procedi all'ordine",
+    "Acquistare adesso con 1-Click",
     "Paga",
     "Carrello",
   ];
@@ -370,7 +375,12 @@
     // ----- 台灣電商 -----
     "momoshop.com.tw": {
       texts: TW_TEXTS,
-      selectors: ["#buy_yes a", "#inCar a", ".checkoutArea a"],
+      selectors: [
+        "#buy_yes a",
+        "#inCar a",
+        ".checkoutArea a",
+        ...BASE_SELECTORS,
+      ],
     },
     "ruten.com.tw": {
       texts: [...TW_TEXTS, "出價"],
@@ -380,6 +390,7 @@
         '[class*="qa-add-cart"]',
         '[class*="item-shopping-cart-action"]',
         '[class*="buy"]',
+        ...BASE_SELECTORS,
       ],
     },
     "shopee.tw": {
@@ -389,11 +400,18 @@
         "a",
         ".btn-solid-primary button",
         '[class*="btn-tinted"]',
+        ...BASE_SELECTORS,
       ],
     },
     "24h.pchome.com.tw": {
       texts: TW_TEXTS,
-      selectors: ["button", "a", '[id*="BuyBtn"]', '[class*="buyBtn"]'],
+      selectors: [
+        "button",
+        "a",
+        '[id*="BuyBtn"]',
+        '[class*="buyBtn"]',
+        ...BASE_SELECTORS,
+      ],
     },
     "books.com.tw": {
       texts: TW_TEXTS,
@@ -416,7 +434,7 @@
       texts: TW_TEXTS,
       selectors: ["button", ...BASE_SELECTORS],
     },
-    "nike.com.tw": {
+    "nike.com": {
       texts: TW_TEXTS,
       selectors: ["button", ...BASE_SELECTORS],
     },
@@ -531,7 +549,7 @@
       selectors: ["button", ...BASE_SELECTORS],
     },
     "nike.com": {
-      texts: EN_TEXTS,
+      texts: [...JP_TEXTS, ...EN_TEXTS, ...TW_TEXTS, FR_TEXTS],
       selectors: ["button", ...BASE_SELECTORS],
     },
     "apple.com": {
@@ -805,7 +823,10 @@
 
   // --- GIF selection ---
   function pickRandomGif() {
-    const pool = readyGifIndices.length > 0 ? readyGifIndices : Array.from({ length: GIF_COUNT }, (_, i) => i);
+    const pool =
+      readyGifIndices.length > 0
+        ? readyGifIndices
+        : Array.from({ length: GIF_COUNT }, (_, i) => i);
     if (pool.length <= 1) {
       lastGifIndex = pool[0];
       return gifCache[pool[0]];
