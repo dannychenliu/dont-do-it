@@ -375,12 +375,7 @@
     // ----- 台灣電商 -----
     "momoshop.com.tw": {
       texts: TW_TEXTS,
-      selectors: [
-        "#buy_yes a",
-        "#inCar a",
-        ".checkoutArea a",
-        ...BASE_SELECTORS,
-      ],
+      selectors: ["#buy_yes a", "#inCar a", ".checkoutArea a", "button"],
     },
     "ruten.com.tw": {
       texts: [...TW_TEXTS, "出價"],
@@ -397,10 +392,8 @@
       texts: TW_TEXTS,
       selectors: [
         "button",
-        "a",
         ".btn-solid-primary button",
         '[class*="btn-tinted"]',
-        ...BASE_SELECTORS,
       ],
     },
     "24h.pchome.com.tw": {
