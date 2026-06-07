@@ -1,8 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Wallet Guardian - 荷包守護者",
+  "name": "__MSG_appName__",
   "version": "1.0.0",
-  "description": "Let angry pet memes help/judge you from buying things online! 讓憤怒的寵物迷因來阻止你購物！",
+  "default_locale": "en",
+  "description": "__MSG_appDesc__",
   "icons": {
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",

@@ -848,7 +848,7 @@
 
     const img = document.createElement("img");
     img.src = gifUrl;
-    img.alt = "購物衝動抑制器";
+    img.alt = chrome.i18n.getMessage("catAlt");
     img.draggable = false;
     overlay.appendChild(img);
 
